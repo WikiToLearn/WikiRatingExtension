@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": ["Abhimanyu Singh Shekhawat"]
+	},
+	"WikiRating-desc": "This is an example extension",
+	"WikiRating-i18n-welcome": "Welcome to the localization file of the WikiRating extension.",
+	"WikiRating-helloworld": "Hello world!",
+	"WikiRating-helloworld-intro": "Welcome to the \"Hello world\" special page of the WikiRating extension.",
+	"helloworld": "Hello world"
+}

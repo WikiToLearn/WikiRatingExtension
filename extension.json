@@ -1,0 +1,53 @@
+{
+	"name": "WikiRating",
+	"version": "0.1.0",
+	"author": [
+		"Abhimanyu Singh Shekhawat"
+	],
+	"url": "https://github.com/WikiToLearn/WikiRating",
+	"descriptionmsg": "WikiRating-desc",
+	"license-name": "MIT",
+	"type": "other",
+	"AutoloadClasses":{
+        "WikiRating":"WikiRating.php",
+        "WikiRatingHooks":"WikiRating.hooks.php",
+        "SpecialWikiRating":"specials/SpecialWikiRating.php"
+    },
+	"config": {
+		"WikiRatingEnableFoo": true
+	},
+	"ExtensionMessagesFiles": {
+		"WikiRatingAlias": "WikiRating.i18n.alias.php"
+	},
+
+	"ResourceFileModulePaths": {
+        "localBasePath": "",
+				"remoteExtPath": "WikiRating"
+			},
+
+	"Hooks": {
+		"BeforePageDisplay": [
+			"WikiRatingHooks::onBeforePageDisplay"
+		]
+	},
+	"MessagesDirs": {
+		"WikiRating": [
+			"i18n"
+		]
+	},
+	"ResourceModules": {
+		"ext.WikiRating": {
+			"position": "top",
+			"scripts":[
+
+				"modules/WikiRating.js"
+			],
+			"styles": [
+
+			],
+			"messages": [],
+			"dependencies": []
+		}
+	},
+		"manifest_version": 1
+}
