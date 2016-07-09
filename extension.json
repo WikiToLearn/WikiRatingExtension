@@ -12,6 +12,7 @@
         "WikiRating":"WikiRating.php",
         "WikiRatingHooks":"WikiRating.hooks.php",
         "SpecialWikiRating":"specials/SpecialWikiRating.php"
+
     },
 	"config": {
 		"WikiRatingEnableFoo": true
