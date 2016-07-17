@@ -17,6 +17,7 @@ $( document ).ready(function () {
         displayPageInfo();
         $( "#siteSub" ).append("Rating Score -- "+Math.round(currentPageRating*100)/100+"/"+Math.round(maxPageRating*100)/100+"<br>");
         displayBadge(data);
+        voteBar();
 
         console.log( data['pageTitle'] );
 
@@ -50,7 +51,51 @@ function displayPageInfo(){
 
 }
 
+//Function to display Vote Bar
+function voteBar(){
+  $voteSlider=$('<div id="slider" align="center" ><input id="slide" type="range" min="0" max="10" step="1" value="0"  style="width: 25%;" /><p id ="jd" style="font-size : 20px;">0</p><button type="button" id="voteButton" style="font-size : 12px; width: 10%; height: 5%;" >Vote</button></div><br/>');
+  $("#firstHeading").append($voteSlider);
+  $( "#slide" ).change(function() {
+    console.log($( "#slide" ).val());
+    $("#jd").text($( "#slide" ).val());
+});
 
+}
+
+// Function to handle the click event on the Vote button and submit the vote to the server
+
+$(document).on('click','#voteButton', function()
+{
+
+    var userName=mw.config.get("wgUserName");
+    var pageTitle=mw.config.get("wgPageName");
+    var userVote=$( "#slide" ).val();
+    console.log(userVote);
+
+    $.ajax({
+      type: 'POST',
+      url: "http://localhost:8080/WikiRating/engine/votePage/userVote?callback=?",
+      data: {
+              pageTitle:pageTitle,
+              userName:userName,
+              userVote:userVote
+    },
+      dataType: 'jsonp',
+      success: function(data) {
+
+        console.log( data['pageTitle'] );
+
+
+      },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown); console.log(textStatus);
+    }
+
+  });
+
+
+
+});
 
 //Function to display a suitable badge
 function displayBadge(data){
