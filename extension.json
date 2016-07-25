@@ -50,5 +50,8 @@
 			"dependencies": []
 		}
 	},
+	"SpecialPages": {
+		"WikiRating": "SpecialWikiRating"
+	},
 		"manifest_version": 1
 }
