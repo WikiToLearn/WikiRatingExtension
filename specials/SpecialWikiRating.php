@@ -22,18 +22,25 @@ class SpecialWikiRating extends SpecialPage {
 		$output = $this->getOutput();
 		$this->setHeaders();
 
-		# Get request data from, e.g.
-		$param = $request->getText( 'pagename' );
+		# Get request data from the URL
 
+		$nameSpace = $request->getText( 'nameSpace' );
+		$badgeNumberStats = $request->getText( 'badgeNumberStats' );
+		$pageRank = $request->getText( 'pageRank' );
+		$totalVotes = $request->getText( 'totalVotes' );
+		$currentPageVote = $request->getText( 'currentPageVote' );
+		$pageReliability = $request->getText( 'pageReliability' );
+		$maxPageRank = $request->getText( 'maxPageRank' );
+		$maxPageReliability = $request->getText( 'maxPageReliability' );
 
+		#Output on the Page
 
-
-		# Do stuff
-		# ...
-		$wikitext ='Hello world this is Abhimanyu!'.'this us foo';
-		$output->addWikiText( $wikitext.$param );
-		$output->addWikiText( $param );
-
+		$output->addWikiText( "*'''NAMESPACE:'''	".$nameSpace );
+		$output->addWikiText( "*'''BADGE_NUMBER:'''	".$badgeNumberStats );
+		$output->addWikiText( "*'''PAGE_RANK/MAX_PAGE_RANK:'''	".$pageRank."/".$maxPageRank );
+		$output->addWikiText( "*'''TOTAL_VOTES:'''	".$totalVotes );
+		$output->addWikiText( "*'''CURRENT_PAGE_VOTE:'''	".$currentPageVote );
+		$output->addWikiText( "*'''PAGE_RELIABILITY/MAX_PAGE_RELIABILITY:'''	".$pageReliability."/".$maxPageReliability );
 
 
 	}

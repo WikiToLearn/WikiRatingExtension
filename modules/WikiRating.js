@@ -1,7 +1,10 @@
+var nameSpace,badgeNumberStats,pageRank,totalVotes,currentPageVote,pageReliability,maxPageRank,maxPageReliability;
+
 $( document ).ready(function () {
 
     var maxPageRating,currentPageRating,pageTitle,badgeNumber,badgeImage;
 
+if(mw.config.get("wgNamespaceNumber")!=-1){
 
 
     //Code to fetch the Current Page Parameters
@@ -128,108 +131,46 @@ function displayBadge(data){
 
 }
 
-});
 
 //Code to display the stats
+$.ajax({
+  type: 'GET',
+  url: "http://localhost:8080/WikiRating/engine/stats/display?callback=?",
+  data: {pageTitle: mw.config.get("wgPageName")},
+  dataType: 'jsonp',
+  success: function(data) {
 
-
-
-function getStats(popup){
-
-  $.ajax({
-    type: 'GET',
-    url: "http://localhost:8080/WikiRating/engine/stats/display?callback=?",
-    data: {pageTitle: mw.config.get("wgPageName")},
-    dataType: 'jsonp',
-    success: function(data) {
-      displayStats(data,popup);
-    //  createPopup(popup);
-    },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.log(errorThrown); console.log(textStatus);
-  }
+ nameSpace=data['nameSpace'];
+ badgeNumberStats=data['badgeNumber'];
+ pageRank=data['pageRank'];
+ totalVotes=data['totalVotes'];
+ currentPageVote=data['currentPageVote'];
+ pageReliability=data['pageReliability'];
+ maxPageRank=data['maxPageRank'];
+ maxPageReliability=data['maxPageReliability'];
+  //  createPopup(popup);
+  //console.log(nameSpace);
+  },
+error: function(jqXHR, textStatus, errorThrown) {
+  console.log(errorThrown); console.log(textStatus);
+}
 
 });
 
 }
 
-function displayStats(data,popup){
+});
 
 
 
 
-  //var popup = open("", "Popup", "width=1366,height=368");
-
-  var nameSpace=popup.document.createTextNode("NameSpace : "+data['nameSpace']);
-  var badgeNumber=popup.document.createTextNode("Badge Number : "+data['badgeNumber']);
-  var pageRank=popup.document.createTextNode("Page Rank / Max Page Rank: "+data['pageRank']+"/"+data['maxPageRank']);
-  var totalVotes=popup.document.createTextNode("Total Votes : "+data['totalVotes']);
-  var currentPageVote=popup.document.createTextNode("Current Page Vote : "+data['currentPageVote']);
-  var pageReliability=popup.document.createTextNode("Page Reliability / Max Page Reliability: "+data['pageReliability']+"/"+data['maxPageReliability']);
-
-  popup.document.body.appendChild(nameSpace);
-  var br = document.createElement("br");
-  popup.document.body.appendChild(br);
-
-  popup.document.body.appendChild(badgeNumber);
-  var br = document.createElement("br");
-  popup.document.body.appendChild(br);
-
-  popup.document.body.appendChild(pageRank);
-  var br = document.createElement("br");
-  popup.document.body.appendChild(br);
-
-  popup.document.body.appendChild(totalVotes);
-  var br = document.createElement("br");
-  popup.document.body.appendChild(br);
-
-  popup.document.body.appendChild(currentPageVote);
-  var br = document.createElement("br");
-  popup.document.body.appendChild(br);
-
-  popup.document.body.appendChild(pageReliability);
-
-console.log(data);
-
-}
-
+  //code to handle click event on MORE button
        $(document).on('click','#stats', function()
        {
 
-            //var popup = open("", "Popup", "width=1366,height=368");
-            var popup=window.open("about:blank","newwin");
-            getStats(popup);
+        console.log(badgeNumberStats);
+        var specialPageURL="http://en.tuttorotto.biz/Special:WikiRating?"+"nameSpace="+nameSpace+"&"+"badgeNumberStats="+badgeNumberStats+"&"+"pageRank="+pageRank+"&"+"totalVotes="+totalVotes+"&"+"currentPageVote="+currentPageVote+"&"+"pageReliability="+pageReliability+"&"+"maxPageRank="+maxPageRank+"&"+"maxPageReliability="+maxPageReliability;
+        var popup=window.open(specialPageURL,"newwin");
+
 
        });
-
-  //Misc comments
-  /*  $( "#siteSub" ).append("Title: "+mw.config.get("wgPageName")+"<br>"+" User: "+mw.config.get("wgUserName")+"<br>");
-  var badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/im.png'});
-  badgeImage.appendTo('#siteSub');*/
-  /*
-  $.ajax({
-  type: 'GET',
-  url:"http://localhost:8080/WikiRating/engine/display/pageRating1?callback=?",
-  data: {pageTitle: mw.config.get("wgPageName")},
-  dataType: 'jsonp', // Notice! JSONP <-- P (lowercase)
-  success:function(data){
-  // do stuff with json (in this case an array)
-  //alert("Success");
-  console.log(data['Ratings']);
-},
-error: function(jqXHR, textStatus, errorThrown) {
-console.log(errorThrown); console.log(textStatus);
-}
-});*/
-
-    //var $ratingText=$('<p align=centre>Page Rating</p>');
-    //var $ratingText="hello I am good";
-    /*$ratingText.appendTo(document.getElementById("siteSub"));
-    $rating.appendTo(document.getElementById("siteSub"));*/
-    //$testContent=load("www.google.com");
-    //$testContent.appendTo(document.getElementById("contentSub"));
-    //http://www.json-generator.com/api/json/get/crcEHvmyZK?indent=2
-    //$( "#contentSub" ).load( "extensions/WikiRating/modules/sc.php" );
-
-    //$( "#contentSub" ).text(mw.config.get("wgArticleId"));
-    //$( "#contentSub" ).text(mw.config.get("wgUserId"));
