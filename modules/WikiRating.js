@@ -1,10 +1,11 @@
 var nameSpace,badgeNumberStats,pageRank,totalVotes,currentPageVote,pageReliability,maxPageRank,maxPageReliability;
 
+//To wait for the page to load completely
 $( document ).ready(function () {
 
     var maxPageRating,currentPageRating,pageTitle,badgeNumber,badgeImage;
 
-if(mw.config.get("wgNamespaceNumber")!=-1){
+    if(mw.config.get("wgNamespaceNumber")!=-1){
 
 
     //Code to fetch the Current Page Parameters
@@ -148,8 +149,7 @@ $.ajax({
  pageReliability=data['pageReliability'];
  maxPageRank=data['maxPageRank'];
  maxPageReliability=data['maxPageReliability'];
-  //  createPopup(popup);
-  //console.log(nameSpace);
+
   },
 error: function(jqXHR, textStatus, errorThrown) {
   console.log(errorThrown); console.log(textStatus);
