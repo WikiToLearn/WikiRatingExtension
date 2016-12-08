@@ -1,176 +1,184 @@
-var nameSpace,badgeNumberStats,pageRank,totalVotes,currentPageVote,pageReliability,maxPageRank,maxPageReliability;
+( function ( $, mw ) {
+    'use strict';
 
-//To wait for the page to load completely
-$( document ).ready(function () {
+    /**
+     * Variables to be used
+     */
+    var nameSpace,badgeNumberStats,pageRank,totalVotes,
+    currentPageVote,pageReliability,maxPageRank,maxPageReliability;
+    var url = 'http://localhost:8080/WikiRating/engine/display/pageRating?callback=?';
+    
+    var pageTitle       = mw.config.get('wgPageName');
+    var userName        = mw.config.get('wgUserName');
+    var nameSpaceNumber = mw.config.get('wgNamespaceNumber');
+    var voteGiven       = 0; // the vote give by the user. 0 means he hasn't voted yet
 
-    var maxPageRating,currentPageRating,pageTitle,badgeNumber,badgeImage;
+    // getDataFromServer();
+    /**
+     * Here one should send the ajax request and get the response.
+     * I will recreate the response data as a plain object just to do some tests.
+     */
+    var data = {
+        pageTitle         : pageTitle,
+        currentPageRating : 4,
+        maxPageRating     : 10,
+        badgeNumber       : 2,
+        namespace         : nameSpaceNumber,
+        pageRank          : 3.5,
+        maxPageRank       : 6,
+        totalVotes        : 524,
+        currentPageVote   : 3,
+        pageReliability   : 12,
+        maxPageReliability: 15
+    };
 
-    if(mw.config.get("wgNamespaceNumber")!=-1){
+    populateData(data);
 
+    $('.rating__star').on('click', function (data) {
+        // this will be an array with the classes of the matched element
+        var starClassList = this.classList;
+        // We take the second class from the star element and get 
+        // the characters to identify the number of the star from the 
+        // class name. "rating__star--{number}" is the format of the class.
+        var stringNumber = starClassList[1].substr(14);
+        var starNumber = getNumberFromString(stringNumber);
 
-    //Code to fetch the Current Page Parameters
+        console.info("The user will vote with these parameters");
+        console.debug("Page: " + pageTitle);
+        console.debug("User: " + userName);
+        console.debug("Vote:" + starNumber);
 
-    $.ajax({
-      type: 'GET',
-      url: "http://localhost:8080/WikiRating/engine/display/pageRating?callback=?",
-      data: {pageTitle: mw.config.get("wgPageName")},
-      dataType: 'jsonp',
-      success: function(data) {
+        // TODO: handle ajax request
+        // Let's say it returns a boolean of a succesful request:
+        var success = true;
+        if (success) {
+            // set the vote on the stars
+            setVote(starNumber);
+            console.info('Set Vote star to ' + starNumber);
+            // On success display a "feedback for the vote"
+            var thankyouDiv = $('.rating__thank-you');
+            thankyouDiv.addClass('rating--visible');
+            setTimeout(function () {
+                thankyouDiv.fadeTo( 1000, 0, function () {
+                    thankyouDiv.removeClass('rating--visible');
+                });
+            }, 3000);
+        } else {
+            // TODO: add warning 
+        }
+    });
 
-        displayRatingBar(data);
-        displayPageInfo();
-        $( "#siteSub" ).append("Rating Score -- "+Math.round(currentPageRating*100)/100+"/"+Math.round(maxPageRating*100)/100+"<br>");
-        displayBadge(data);
-        voteBar();
+    // Display the content of rating when the user scrolls on bottom
+    $(window).scroll(function () {
+        displayRatingBox();
+    });
 
-        console.log( data['pageTitle'] );
-
-
-      },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(errorThrown); console.log(textStatus);
+    /**
+     * Function that append values and badges to
+     * the html
+     * @param  {object} data response of the ajax request
+     */
+    function populateData(data) {
+        if (data.currentPageVote) {
+            setVote(data.currentPageVote);
+        }
+        // percentual value of the rank
+        displayStatsNumber(Math.floor(data.pageRank / data.maxPageRank * 100));
+        displayBadge(data.badgeNumber);
     }
 
-  });
-
-
-//Function to display the Rating bar.
-function displayRatingBar(data){
-  pageTitle=data['pageTitle'];
-  currentPageRating=data['currentPageRating'];
-  maxPageRating=data['maxPageRating'];
-  badgeNumber=data['badgeNumber'];
-  console.log(pageTitle+" "+currentPageRating+" "+maxPageRating+" "+badgeNumber);
-
-  var $rating = $('<progress value='+currentPageRating+' max='+maxPageRating+' ></progress><br>');
-  var $ratingText="Page Rating: ";
-  $( "#siteSub" ).append($ratingText);
-  $rating.appendTo(document.getElementById("siteSub"));
-}
-
-//Function to display the PageInfo
-function displayPageInfo(){
-
-  $( "#siteSub" ).append("Title: "+mw.config.get("wgPageName")+"<br>"+" User: "+mw.config.get("wgUserName")+"<br>");
-
-}
-
-//Function to display Vote Bar
-function voteBar(){
-  $voteSlider=$('<div id="slider" align="center" ><input id="slide" type="range" min="0" max="10" step="1" value="0"  style="width: 25%;" /><p id ="jd" style="font-size : 20px;">0</p><button type="button" id="voteButton" style="font-size : 12px; width: 10%; height: 5%;" >Vote</button>  <button type="button" id="stats" style="font-size : 12px; width: 10%; height: 5%;" >More!</button></div><br/>');
-  $("#firstHeading").append($voteSlider);
-  $( "#slide" ).change(function() {
-    console.log($( "#slide" ).val());
-    $("#jd").text($( "#slide" ).val());
-});
-
-}
-
-// Function to handle the click event on the Vote button and submit the vote to the server
-
-$(document).on('click','#voteButton', function()
-{
-
-    var userName=mw.config.get("wgUserName");
-    var pageTitle=mw.config.get("wgPageName");
-    var userVote=$( "#slide" ).val();
-    console.log(userVote);
-
-    $.ajax({
-      type: 'POST',
-      url: "http://localhost:8080/WikiRating/engine/votePage/userVote?callback=?",
-      data: {
-              pageTitle:pageTitle,
-              userName:userName,
-              userVote:userVote
-    },
-      dataType: 'jsonp',
-      success: function(data) {
-
-        console.log( data['pageTitle'] );
-
-
-      },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(errorThrown); console.log(textStatus);
+    /**
+     * Function that toggles the visibility of the rating box
+     * when the user window is scrolled down to the bottom
+     * of the page
+     */
+    function displayRatingBox() {
+        var $ratingContent   = $('.rating__content');
+        var $window          = $(window);
+        var ratingContentTop = $ratingContent.offset().top;
+        var windowTop        = $window.scrollTop();
+        var windowBottom     = windowTop + $window.height();
+        if (ratingContentTop > windowTop && ratingContentTop < windowBottom) {
+            $ratingContent.addClass("rating--visible");
+        }
     }
 
-  });
+    /**
+     * Function that given the vote, sets the class 
+     * "colored" to all the the stars from 1 to vote
+     * @param {integer} voteNumber the vote
+     */
+    function setVote(voteNumber) {
+        // First, remove the colored class to all the stars
+        $('.rating__star').removeClass('rating__star--colored');
+        var starClass = '.rating__star--';
+        var element = '';
+        for (var i = 1; i <= voteNumber; i++) {
+            element =  starClass + getStringFromNumber(i);
+            $(starClass + getStringFromNumber(i)).addClass('rating__star--colored');
+        }
+    }
 
+    /**
+     * Function that converts a number written
+     * in letters to an integer
+     * @param  {string} voteString from 'one' to 'five'
+     * @return {integer} the corresponding number
+     */
+    function getNumberFromString(voteString) {
+        const numbers = {
+            'zero': 0,
+            'one': 1,
+            'two': 2,
+            'three': 3,
+            'four': 4,
+            'five': 5
+        };
+        return numbers[voteString];
+    }
 
+    /**
+     * Function that takes an integer up to 5 and 
+     * returns the corresponding number in words
+     * @param {integer} the integer number
+     * @return  {string} the corresponding
+     */
+    function getStringFromNumber(voteInteger) {
+        const numbers = ['zero', 'one', 'two', 'three', 'four', 'five'];
+        return numbers[voteInteger];
+    } 
 
-});
+    /**
+     * Function that append the percentual value
+     * of the rank to the proper html element
+     * @param  {integer} percentualValue
+     */
+    function displayStatsNumber(percentualValue) {
+        $('.rating__value').append(percentualValue + '%');
+    }
 
-//Function to display a suitable badge
-function displayBadge(data){
+    /**
+     * Function that takes an integer from 1 to 3
+     * and append the corresponding unicode 
+     * medal character from 1 to 3
+     * @param  {integer} badgeNumber 
+     */
+    function displayBadge(badgeNumber) {
+        var trophySpan  = $('.rating__trophy');
+        switch (badgeNumber) {
+            case 1:
+                trophySpan.append('🥉'); // Bronze
+                break;
+            case 2:
+                trophySpan.append('🥈'); // Silver
+                break;
+            case 3:
+                trophySpan.append('🥇'); // Gold
+                break;
+            default:
+                trophySpan.empty();
+                break;
+        }
+    }
 
-  badgeNumber=data['badgeNumber'];
-
-  if(badgeNumber==1){
-    badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/resources/images/platinum.png'});
-    badgeImage.appendTo('#siteSub');
-  }
-  else if (badgeNumber==2) {
-    badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/resources/images/gold.png'});
-    badgeImage.appendTo('#siteSub');
-  }
-
-  else if (badgeNumber==3) {
-    badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/resources/images/silver.png'});
-    badgeImage.appendTo('#siteSub');
-  }
-  else if (badgeNumber==4) {
-    badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/resources/images/bronze.png'});
-    badgeImage.appendTo('#siteSub');
-  }
-
-  else{
-    badgeImage = $('<img />', {src : 'extensions/WikiRating/modules/resources/images/stone.png'});
-    badgeImage.appendTo('#siteSub');
-  }
-
-
-}
-
-
-//Code to display the stats
-$.ajax({
-  type: 'GET',
-  url: "http://localhost:8080/WikiRating/engine/stats/display?callback=?",
-  data: {pageTitle: mw.config.get("wgPageName")},
-  dataType: 'jsonp',
-  success: function(data) {
-
- nameSpace=data['nameSpace'];
- badgeNumberStats=data['badgeNumber'];
- pageRank=data['pageRank'];
- totalVotes=data['totalVotes'];
- currentPageVote=data['currentPageVote'];
- pageReliability=data['pageReliability'];
- maxPageRank=data['maxPageRank'];
- maxPageReliability=data['maxPageReliability'];
-
-  },
-error: function(jqXHR, textStatus, errorThrown) {
-  console.log(errorThrown); console.log(textStatus);
-}
-
-});
-
-}
-
-});
-
-
-
-
-  //code to handle click event on MORE button
-       $(document).on('click','#stats', function()
-       {
-
-        console.log(badgeNumberStats);
-        var specialPageURL="http://en.tuttorotto.biz/Special:WikiRating?"+"nameSpace="+nameSpace+"&"+"badgeNumberStats="+badgeNumberStats+"&"+"pageRank="+pageRank+"&"+"totalVotes="+totalVotes+"&"+"currentPageVote="+currentPageVote+"&"+"pageReliability="+pageReliability+"&"+"maxPageRank="+maxPageRank+"&"+"maxPageReliability="+maxPageReliability;
-        var popup=window.open(specialPageURL,"newwin");
-
-
-       });
+} )( jQuery, mediaWiki );
