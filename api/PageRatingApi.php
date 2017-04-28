@@ -1,5 +1,17 @@
 <?php
-class PageRatingApi extends ApiBase {
+/**
+* PageRatingApi extends ApiBase in order to expose an action API module
+*
+* @author Alessandro Tundo <alessandrotundo94@gmail.com>
+* @access public
+*/
+public class PageRatingApi extends ApiBase {
+	/**
+	* Evaluates the parameters, performs the requested query
+	* and sets up the result
+	* @return boolean true
+	* @access public
+	*/
 	public function execute() {
     global $wgContLang;
 		$title = $this->getMain()->getVal( 'title' );
@@ -29,6 +41,13 @@ class PageRatingApi extends ApiBase {
 		return true;
   }
 
+	/**
+	* Get rating information about the latest revision of the requested page
+	* and add it to the API result object
+	* @param string $title the page title
+	* @param ApiResult $result the API result
+	* @access public
+	*/
 	public function getLatestRevisionRating($title, &$result){
 		$latestRating = WikiRatingRestClient::getLatestRevisionRating($title);
     $result->addValue(null, $this->getModuleName(),
@@ -39,6 +58,13 @@ class PageRatingApi extends ApiBase {
     );
 	}
 
+	/**
+	* Get rating information about the specified revision of the requested page
+	* and add it to the API result object
+	* @param string $title the page title
+	* @param ApiResult $result the API result
+	* @access public
+	*/
 	public function getRevisionRatingById($title, $revId, &$result){
 		$revisionsRating = WikiRatingRestClient::getRevisionRatingById($title, $revId);
     $result->addValue(null, $this->getModuleName(),
@@ -49,6 +75,13 @@ class PageRatingApi extends ApiBase {
     );
 	}
 
+	/**
+	* Get rating information about all revisions of the requested page
+	* and add them to the API result object
+	* @param string $title the page title
+	* @param ApiResult $result the API result
+	* @access public
+	*/
 	public function getAllRevisionsRating($title, &$result){
 		$revisionsRating = WikiRatingRestClient::getRevisionsRating($title);
     $result->addValue(null, $this->getModuleName(),
@@ -59,6 +92,11 @@ class PageRatingApi extends ApiBase {
     );
 	}
 
+	/**
+	* Return the allowed parameters in order to document the API
+	* @return array the allowed API parameters
+	* @access public
+	*/
 	public function getAllowedParams() {
 		return array_merge( parent::getAllowedParams(), array(
 			'title' => array (
@@ -79,6 +117,11 @@ class PageRatingApi extends ApiBase {
 		) );
 	}
 
+	/**
+	* Return the some useful examples in order to document the API
+	* @return array the API usage examples
+	* @access protected
+	*/
   protected function getExamplesMessages() {
 		return [
 			'action=pagerating&title=Course:Modern%20Physics&format=json' =>
