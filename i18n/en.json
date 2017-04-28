@@ -1,10 +1,14 @@
 {
 	"@metadata": {
-		"authors": ["Abhimanyu Singh Shekhawat"]
+		"authors": ["Abhimanyu Singh Shekhawat", "Alessandro Tundo"]
 	},
 	"WikiRating-desc": "This is an example extension",
 	"WikiRating-i18n-welcome": "Welcome to the localization file of the WikiRating extension.",
 	"WikiRating-helloworld": "Hello world!",
 	"WikiRating-helloworld-intro": "Welcome to the \"Hello world\" special page of the WikiRating extension.",
-	"helloworld": "Hello world"
+	"helloworld": "Hello world",
+	"api-help-param-title" : "The title with Course: namespace string prepended",
+	"api-help-param-revid" : "The revision id of the page",
+	"api-help-param-revisions" : "If present, return the rating information about all revisions of the page",
+	"api-help-pagerating-example" : "Get the page rating information of the last revision of Course:Modern Physics."
 }

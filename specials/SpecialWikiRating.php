@@ -41,8 +41,6 @@ class SpecialWikiRating extends SpecialPage {
 		$output->addWikiText( "*'''TOTAL_VOTES:'''	".$totalVotes );
 		$output->addWikiText( "*'''CURRENT_PAGE_VOTE:'''	".$currentPageVote );
 		$output->addWikiText( "*'''PAGE_RELIABILITY/MAX_PAGE_RELIABILITY:'''	".$pageReliability."/".$maxPageReliability );
-
-
 	}
 
 }
