@@ -9,29 +9,25 @@
 	"descriptionmsg": "WikiRating-desc",
 	"license-name": "MIT",
 	"type": "other",
-	"APIModules": {
-			"PageRatingApi": "PageRatingApi"
-	},
 	"AutoloadClasses":{
 		"WikiRating" : "WikiRating.php",
+		"PageRatingApi" : "api/PageRatingApi.php",
 		"WikiRatingHooks" : "WikiRating.hooks.php",
 		"SpecialWikiRating" : "specials/SpecialWikiRating.php",
-		"PageRatingApi" : "api/PageRatingApi.php",
 		"WikiRatingRestClient" : "WikiRatingRestClient.php"
 	},
 	"config": {
-		"WikiRatingEnableFoo": true,
 		"WikiRatingRestApi" : "http://wikirating:8080/"
+	},
+	"APIModules": {
+		"pagerating" : "PageRatingApi"
 	},
 	"ExtensionMessagesFiles": {
 		"WikiRatingAlias": "WikiRating.i18n.alias.php"
 	},
-
 	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteExtPath": "WikiRating"
+		"localBasePath": ""
 	},
-
 	"Hooks": {
 		"BeforePageDisplay": [
 			"WikiRatingHooks::onBeforePageDisplay"

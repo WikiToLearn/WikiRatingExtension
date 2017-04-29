@@ -5,7 +5,7 @@
 * @author Alessandro Tundo <alessandrotundo94@gmail.com>
 * @access public
 */
-public static class WikiRatingRestClient{
+class WikiRatingRestClient{
 
   /**
   * Use WikiRating RESTful API to get the latest revision rating information

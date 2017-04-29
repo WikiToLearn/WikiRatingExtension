@@ -5,7 +5,7 @@
 * @author Alessandro Tundo <alessandrotundo94@gmail.com>
 * @access public
 */
-public class PageRatingApi extends ApiBase {
+class PageRatingApi extends ApiBase {
 	/**
 	* Evaluates the parameters, performs the requested query
 	* and sets up the result
@@ -49,13 +49,17 @@ public class PageRatingApi extends ApiBase {
 	* @access public
 	*/
 	public function getLatestRevisionRating($title, &$result){
-		$latestRating = WikiRatingRestClient::getLatestRevisionRating($title);
-    $result->addValue(null, $this->getModuleName(),
-      array (
-        'success' => 'true',
-        'response' => $latestRating
-      )
-    );
+		$latestRevisionRatingJson = WikiRatingRestClient::getLatestRevisionRating($title);
+		$latestRevisionRatingObj = json_decode($latestRevisionRatingJson);
+		$apiResponse = array('success' => '', 'response' => $latestRevisionRatingObj);
+
+		if (isset($latestRevisionRatingObj->errors) || isset($latestRevisionRatingObj->exception)) {
+			$apiResponse['success'] = 'false';
+		}else {
+			$apiResponse['success'] = 'true';
+		}
+
+		$result->addValue(null, $this->getModuleName(), $apiResponse);
 	}
 
 	/**
@@ -66,13 +70,17 @@ public class PageRatingApi extends ApiBase {
 	* @access public
 	*/
 	public function getRevisionRatingById($title, $revId, &$result){
-		$revisionsRating = WikiRatingRestClient::getRevisionRatingById($title, $revId);
-    $result->addValue(null, $this->getModuleName(),
-      array (
-        'success' => 'true',
-        'response' => $revisionsRating
-      )
-    );
+		$revisionRatingJson = WikiRatingRestClient::getRevisionRatingById($title, $revId);
+		$revisionRatingObj = json_decode($revisionRatingJson);
+		$apiResponse = array('success' => '', 'response' => $revisionRatingObj);
+
+		if (isset($revisionRatingObj->errors) || isset($revisionRatingObj->exception)) {
+			$apiResponse['success'] = 'false';
+		}else {
+			$apiResponse['success'] = 'true';
+		}
+
+		$result->addValue(null, $this->getModuleName(), $apiResponse);
 	}
 
 	/**
@@ -83,13 +91,17 @@ public class PageRatingApi extends ApiBase {
 	* @access public
 	*/
 	public function getAllRevisionsRating($title, &$result){
-		$revisionsRating = WikiRatingRestClient::getRevisionsRating($title);
-    $result->addValue(null, $this->getModuleName(),
-      array (
-        'success' => 'true',
-        'response' => $revisionsRating
-      )
-    );
+		$revisionsRatingJson = WikiRatingRestClient::getAllRevisionsRating($title);
+		$revisionsRatingObj = json_decode($revisionsRatingJson);
+		$apiResponse = array('success' => '', 'response' => $revisionsRatingObj);
+
+		if (isset($revisionsRatingObj->errors) || isset($revisionsRatingObj->exception)) {
+			$apiResponse['success'] = 'false';
+		}else {
+			$apiResponse['success'] = 'true';
+		}
+
+		$result->addValue(null, $this->getModuleName(), $apiResponse);
 	}
 
 	/**
@@ -101,17 +113,17 @@ public class PageRatingApi extends ApiBase {
 		return array_merge( parent::getAllowedParams(), array(
 			'title' => array (
 				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_REQUIRED => 'true',
+				ApiBase::PARAM_REQUIRED => true,
         ApiBase::PARAM_HELP_MSG => 'api-help-param-title'
 			),
 			'revid' => array(
 				ApiBase::PARAM_TYPE => 'string',
-				ApiBase::PARAM_REQUIRED => 'false',
+				ApiBase::PARAM_REQUIRED => false,
         ApiBase::PARAM_HELP_MSG => 'api-help-param-revid'
 			),
 			'revisions' => array(
 				ApiBase::PARAM_TYPE => 'boolean',
-				ApiBase::PARAM_REQUIRED => 'false',
+				ApiBase::PARAM_REQUIRED => false,
 				ApiBase::PARAM_HELP_MSG => 'api-help-param-revisions'
 			)
 		) );
@@ -129,3 +141,4 @@ public class PageRatingApi extends ApiBase {
 		];
 	}
 }
+?>
