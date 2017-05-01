@@ -17,6 +17,7 @@
 		"WikiRatingRestClient" : "WikiRatingRestClient.php"
 	},
 	"config": {
+		"WikiRatingNamespaces" : [2800],
 		"WikiRatingRestApi" : "http://wikirating:8080/"
 	},
 	"APIModules": {

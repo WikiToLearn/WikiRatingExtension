@@ -51,14 +51,7 @@ class PageRatingApi extends ApiBase {
 	public function getLatestRevisionRating($title, &$result){
 		$latestRevisionRatingJson = WikiRatingRestClient::getLatestRevisionRating($title);
 		$latestRevisionRatingObj = json_decode($latestRevisionRatingJson);
-		$apiResponse = array('success' => '', 'response' => $latestRevisionRatingObj);
-
-		if (isset($latestRevisionRatingObj->errors) || isset($latestRevisionRatingObj->exception)) {
-			$apiResponse['success'] = 'false';
-		}else {
-			$apiResponse['success'] = 'true';
-		}
-
+		$apiResponse = $this->setApiResponse($latestRevisionRatingObj);
 		$result->addValue(null, $this->getModuleName(), $apiResponse);
 	}
 
@@ -72,14 +65,7 @@ class PageRatingApi extends ApiBase {
 	public function getRevisionRatingById($title, $revId, &$result){
 		$revisionRatingJson = WikiRatingRestClient::getRevisionRatingById($title, $revId);
 		$revisionRatingObj = json_decode($revisionRatingJson);
-		$apiResponse = array('success' => '', 'response' => $revisionRatingObj);
-
-		if (isset($revisionRatingObj->errors) || isset($revisionRatingObj->exception)) {
-			$apiResponse['success'] = 'false';
-		}else {
-			$apiResponse['success'] = 'true';
-		}
-
+		$apiResponse = $this->setApiResponse($revisionRatingObj);
 		$result->addValue(null, $this->getModuleName(), $apiResponse);
 	}
 
@@ -93,15 +79,24 @@ class PageRatingApi extends ApiBase {
 	public function getAllRevisionsRating($title, &$result){
 		$revisionsRatingJson = WikiRatingRestClient::getAllRevisionsRating($title);
 		$revisionsRatingObj = json_decode($revisionsRatingJson);
-		$apiResponse = array('success' => '', 'response' => $revisionsRatingObj);
-
-		if (isset($revisionsRatingObj->errors) || isset($revisionsRatingObj->exception)) {
-			$apiResponse['success'] = 'false';
-		}else {
-			$apiResponse['success'] = 'true';
-		}
-
+		$apiResponse = $this->setApiResponse($revisionsRatingObj);
 		$result->addValue(null, $this->getModuleName(), $apiResponse);
+	}
+
+	/**
+	* Set the response value to be added to API result
+	* @param Object $ratingObj the WikiRating RESTful API response
+	* @return array the response value to be added to API result
+	* @access private
+	*/
+	private function setApiResponse($ratingObj){
+		$apiResponse = array('status' => '', 'response' => $ratingObj);
+		if (isset($ratingObj->errors) || isset($ratingObj->exception)) {
+			$apiResponse['status'] = 'error';
+		}else {
+			$apiResponse['status'] = 'success';
+		}
+		return $apiResponse;
 	}
 
 	/**
