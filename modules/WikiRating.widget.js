@@ -60,6 +60,7 @@
         console.debug("Vote:" + starNumber);
 
         // TODO: handle ajax request
+        // Insert AJAX vote action here
         // Let's say it returns a boolean of a succesful request:
         var success = true;
         if (success) {
@@ -85,10 +86,10 @@
      * Once the data has been loaded toggle
      * its visibility on scroll.
      */
-    function enableWidget(path) {
+    function enableWidget(contentPath) {
         $el = $('<div class="rating__wrapper"></div>').insertAfter('.article__wrapper');
         // Load the data from the server
-        $el.load(path, function () {
+        $el.load(contentPath, function () {
             // Display the content of rating when the user scrolls on bottom
             $(window).scroll(function () {
                 displayRatingBox();
