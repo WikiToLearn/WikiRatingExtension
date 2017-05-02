@@ -79,19 +79,21 @@
         }
     });
 
-    // Display the content of rating when the user scrolls on bottom
-    $(window).scroll(function () {
-        displayRatingBox();
-    });
-
     /**
      * Load the html content from the server
-     * and put it on bottom of the page
+     * and put it on bottom of the page. 
+     * Once the data has been loaded toggle
+     * its visibility on scroll.
      */
     function enableWidget(path) {
         $el = $('<div class="rating__wrapper"></div>').insertAfter('.article__wrapper');
         // Load the data from the server
-        $el.load(path);
+        $el.load(path, function () {
+            // Display the content of rating when the user scrolls on bottom
+            $(window).scroll(function () {
+                displayRatingBox();
+            });
+        });
     }
 
     /**
