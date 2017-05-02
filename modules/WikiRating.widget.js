@@ -85,6 +85,16 @@
     });
 
     /**
+     * Load the html content from the server
+     * and put it on bottom of the page
+     */
+    function enableWidget(path) {
+        $el = $('<div class="rating__wrapper"></div>').insertAfter('.article__wrapper');
+        // Load the data from the server
+        $el.load(path);
+    }
+
+    /**
      * Function that append values and badges to
      * the html
      * @param  {object} data response of the ajax request
