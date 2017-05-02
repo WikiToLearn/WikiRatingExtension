@@ -149,7 +149,7 @@
      * @return {integer} the corresponding number
      */
     function getNumberFromString(voteString) {
-        const numbers = {
+        var numbers = {
             'zero': 0,
             'one': 1,
             'two': 2,
@@ -167,7 +167,7 @@
      * @return  {string} the corresponding
      */
     function getStringFromNumber(voteInteger) {
-        const numbers = ['zero', 'one', 'two', 'three', 'four', 'five'];
+        var numbers = ['zero', 'one', 'two', 'three', 'four', 'five'];
         return numbers[voteInteger];
     } 
 
